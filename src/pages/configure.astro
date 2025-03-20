@@ -4,7 +4,7 @@ import BreathingExercise from "../components/BreathingExercise.astro";
 ---
 
 <Layout title="Configure your own breathing exercise">
-  <div class="max-w-2xl mx-auto px-4 py-8">
+  <div class="max-w-3xl mx-auto px-4 py-8">
     <h1 class="text-2xl font-bold mb-6">
       Configure your own breathing exercise
     </h1>
@@ -22,7 +22,7 @@ import BreathingExercise from "../components/BreathingExercise.astro";
             min="1"
             max="20"
             value="4"
-            class="w-full p-2 border rounded"
+            class="block w-full rounded-md bg-black/5 dark:bg-white/5 px-3 py-1.5 text-base dark:text-white text-zinc-800 outline -outline-offset-1 outline-zinc-300 dark:outline-white/10 dark:placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6"
             required
           />
         </div>
@@ -37,7 +37,7 @@ import BreathingExercise from "../components/BreathingExercise.astro";
             min="0"
             max="20"
             value="4"
-            class="w-full p-2 border rounded"
+            class="block w-full rounded-md bg-black/5 dark:bg-white/5 px-3 py-1.5 text-base dark:text-white text-zinc-800 outline -outline-offset-1 outline-zinc-300 dark:outline-white/10 dark:placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6"
           />
         </div>
         <div>
@@ -51,7 +51,7 @@ import BreathingExercise from "../components/BreathingExercise.astro";
             min="1"
             max="20"
             value="4"
-            class="w-full p-2 border rounded"
+            class="block w-full rounded-md bg-black/5 dark:bg-white/5 px-3 py-1.5 text-base dark:text-white text-zinc-800 outline -outline-offset-1 outline-zinc-300 dark:outline-white/10 dark:placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6"
             required
           />
         </div>
@@ -66,7 +66,7 @@ import BreathingExercise from "../components/BreathingExercise.astro";
             min="0"
             max="20"
             value="0"
-            class="w-full p-2 border rounded"
+            class="block w-full rounded-md bg-black/5 dark:bg-white/5 px-3 py-1.5 text-base dark:text-white text-zinc-800 outline -outline-offset-1 outline-zinc-300 dark:outline-white/10 dark:placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6"
           />
         </div>
       </div>
@@ -80,35 +80,21 @@ import BreathingExercise from "../components/BreathingExercise.astro";
           min="1"
           max="10"
           value="3"
-          class="w-full p-2 border rounded"
+          class="block w-full rounded-md bg-black/5 dark:bg-white/5 px-3 py-1.5 text-base dark:text-white text-zinc-800 outline -outline-offset-1 outline-zinc-300 dark:outline-white/10 dark:placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6"
           required
         />
       </div>
 
       <div class="flex space-x-4 pt-4">
-        <button
-          type="button"
-          id="preview-button"
-          class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
-        >
-          Preview Exercise
-        </button>
         <a
           href="/breathe"
           id="breathe-link"
-          class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition-colors"
+          class="rounded-md bg-blue-500 px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500"
         >
           Go to Breathing Page
         </a>
       </div>
     </form>
-
-    <div id="preview-container" class="hidden">
-      <h2 class="text-xl font-semibold mb-4">Preview</h2>
-      <div id="breathing-preview" class="p-4 border rounded-lg bg-gray-50">
-        <!-- Preview will be inserted here -->
-      </div>
-    </div>
 
     <div id="shareable-link-container" class="hidden mt-8">
       <h2 class="text-xl font-semibold mb-4">Shareable Link</h2>
@@ -116,12 +102,12 @@ import BreathingExercise from "../components/BreathingExercise.astro";
         <input
           type="text"
           id="shareable-link"
-          class="flex-1 p-2 border border-zinc-200 dark:border-zinc-700 rounded bg-zinc-50 dark:bg-zinc-800"
+          class="block w-full rounded-md bg-black/5 dark:bg-white/5 px-3 py-1.5 text-base dark:text-white text-zinc-800 outline -outline-offset-1 outline-zinc-300 dark:outline-white/10 dark:placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6"
           readonly
         />
         <button
           id="copy-link"
-          class="px-3 py-2 bg-zinc-200 dark:bg-zinc-700 rounded hover:bg-zinc-300 dark:hover:bg-zinc-600 transition-colors"
+          class="px-3 py-1.5 bg-zinc-200 dark:bg-zinc-700 rounded hover:bg-zinc-300 dark:hover:bg-zinc-600 transition-colors"
         >
           Copy
         </button>
@@ -131,15 +117,10 @@ import BreathingExercise from "../components/BreathingExercise.astro";
 </Layout>
 
 <script>
-  import { startExercise, stopExercise } from "../stores/breathingStore";
-
   const form = document.getElementById("breathing-form") as HTMLFormElement;
-  const previewButton = document.getElementById("preview-button");
   const breatheLink = document.getElementById(
     "breathe-link",
   ) as HTMLAnchorElement;
-  const previewContainer = document.getElementById("preview-container");
-  const previewDiv = document.getElementById("breathing-preview");
   const shareableContainer = document.getElementById(
     "shareable-link-container",
   );
@@ -150,10 +131,7 @@ import BreathingExercise from "../components/BreathingExercise.astro";
 
   if (
     !form ||
-    !previewButton ||
     !breatheLink ||
-    !previewContainer ||
-    !previewDiv ||
     !shareableContainer ||
     !shareableLink ||
     !copyLinkButton
@@ -236,103 +214,6 @@ import BreathingExercise from "../components/BreathingExercise.astro";
     // Generate initial shareable link
     const values = getFormValues();
     updateShareableLink(values);
-  });
-
-  // Preview button
-  previewButton.addEventListener("click", () => {
-    const values = getFormValues();
-
-    // Toggle preview
-    if (previewContainer.classList.contains("hidden")) {
-      previewContainer.classList.remove("hidden");
-
-      // Create and inject a minimal preview
-      previewDiv.innerHTML = `
-        <div class="text-center">
-          <p class="mb-2"><strong>Inhale:</strong> ${values.inhaleTime}s | <strong>Hold:</strong> ${values.holdTime}s | <strong>Exhale:</strong> ${values.exhaleTime}s | <strong>Bottom Hold:</strong> ${values.bottomHoldTime}s</p>
-          <p class="mb-4"><strong>Rounds:</strong> ${values.rounds}</p>
-          <div class="flex justify-center items-center space-x-4">
-            <div id="preview-circle" class="w-24 h-24 rounded-full bg-blue-500 opacity-80 transition-all duration-1000"></div>
-            <div id="preview-text" class="text-lg font-medium"></div>
-          </div>
-          <button id="preview-start" class="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors">Start Preview</button>
-        </div>
-      `;
-
-      const previewCircle = document.getElementById("preview-circle");
-      const previewText = document.getElementById("preview-text");
-      const previewStart = document.getElementById("preview-start");
-
-      if (!previewCircle || !previewText || !previewStart) return;
-
-      let isPreviewRunning = false;
-      let currentStep = 0;
-      let timeoutId: number | null = null;
-
-      previewStart.addEventListener("click", () => {
-        if (isPreviewRunning) {
-          if (timeoutId !== null) {
-            clearTimeout(timeoutId);
-          }
-          previewStart.textContent = "Start Preview";
-          if (previewText) previewText.textContent = "";
-          if (previewCircle) previewCircle.style.transform = "scale(1)";
-          isPreviewRunning = false;
-          currentStep = 0;
-          return;
-        }
-
-        isPreviewRunning = true;
-        previewStart.textContent = "Stop Preview";
-
-        function runStep() {
-          if (!isPreviewRunning) return;
-
-          const steps = [
-            {
-              name: "Inhale",
-              duration: values.inhaleTime,
-              style: "scale(1.5) translateY(-20px)",
-            },
-            {
-              name: "Hold",
-              duration: values.holdTime,
-              style: "scale(1.5) translateY(-20px)",
-            },
-            {
-              name: "Exhale",
-              duration: values.exhaleTime,
-              style: "scale(0.7) translateY(20px)",
-            },
-            {
-              name: "Bottom Hold",
-              duration: values.bottomHoldTime,
-              style: "scale(0.7) translateY(20px)",
-            },
-          ];
-
-          // Skip steps with zero duration
-          if (steps[currentStep].duration === 0) {
-            currentStep = (currentStep + 1) % steps.length;
-            runStep();
-            return;
-          }
-
-          const step = steps[currentStep];
-          if (previewText) previewText.textContent = step.name;
-          if (previewCircle) previewCircle.style.transform = step.style;
-
-          timeoutId = setTimeout(() => {
-            currentStep = (currentStep + 1) % steps.length;
-            runStep();
-          }, step.duration * 1000) as unknown as number;
-        }
-
-        runStep();
-      });
-    } else {
-      previewContainer.classList.add("hidden");
-    }
   });
 
   // Copy link button

@@ -33,15 +33,9 @@ const { inhaleTime = 4, exhaleTime = 4 } = Astro.props;
   );
 
   const breathingAnimation = {
-    inhale: [
-      { scale: 1.5, y: -50 },
-      { duration: inhaleTime, ease: "easeOut" },
-    ],
+    inhale: [{ scale: 1.5 }, { duration: inhaleTime, ease: "easeInOut" }],
     hold: [{ scale: 1.5 }, { duration: 0 }],
-    exhale: [
-      { scale: 0.5, y: 50 },
-      { duration: exhaleTime, ease: "easeInOut" },
-    ],
+    exhale: [{ scale: 0.3 }, { duration: exhaleTime, ease: "easeInOut" }],
     bottomHold: [{ scale: 0.5 }, { duration: 0 }],
   };
 

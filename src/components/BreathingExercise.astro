@@ -1,5 +1,6 @@
 ---
 import BreathingCircle from "./BreathingCircle.astro";
+import { Icon } from "astro-icon/components";
 
 const {
   inhaleTime,
@@ -23,15 +24,16 @@ const {
   data-breath-hold-after-round={breathHoldAfterRound}
   data-rounds-of-rounds={roundsOfRounds}
 >
-  <div class="text-2xl font-semibold mb-8">
+  <div class="text-2xl text-center font-semibold mb-8">
     {
       roundsOfRounds && (
-        <p id="current-super-round" class="text-zinc-500 dark:text-zinc-400">
+        <p id="current-super-round" class="text-zinc-400 dark:text-zinc-500">
           Round <span id="current-super-round-count">1</span> of{" "}
           {roundsOfRounds}:
         </p>
       )
     }
+
     <p>Breath <span id="current-round">1</span> of {rounds}</p>
   </div>
   <BreathingCircle inhaleTime={inhaleTime} exhaleTime={exhaleTime} />
@@ -129,6 +131,7 @@ const {
       isInhaling: true,
       isHolding: false,
       isExhaling: false,
+      isBottomHolding: false,
     });
     breathingPhaseElement!.textContent = "Inhale...";
     timeoutId = setTimeout(() => {
@@ -138,6 +141,7 @@ const {
           isInhaling: false,
           isHolding: true,
           isExhaling: false,
+          isBottomHolding: false,
         });
         breathingPhaseElement!.textContent = "Hold...";
         timeoutId = setTimeout(startExhalePhase, holdTime * 1000);
@@ -154,6 +158,7 @@ const {
       isInhaling: false,
       isHolding: false,
       isExhaling: true,
+      isBottomHolding: false,
     });
     breathingPhaseElement!.textContent = "Exhale...";
     timeoutId = setTimeout(() => {
@@ -161,8 +166,9 @@ const {
         // Bottom hold after exhale (only if bottomHoldTime > 0)
         updateBreathingState({
           isInhaling: false,
-          isHolding: true,
+          isHolding: false,
           isExhaling: false,
+          isBottomHolding: true,
         });
         breathingPhaseElement!.textContent = "Hold at bottom...";
         timeoutId = setTimeout(completeBreathCycle, bottomHoldTime * 1000);
@@ -177,8 +183,9 @@ const {
     // Start the breath hold after completing a round (Wim Hof specific)
     updateBreathingState({
       isInhaling: false,
-      isHolding: true,
+      isHolding: false,
       isExhaling: false,
+      isBottomHolding: false,
       isBreathHoldAfterRound: true,
     });
 
@@ -242,6 +249,7 @@ const {
       isInhaling: false,
       isHolding: false,
       isExhaling: false,
+      isBottomHolding: false,
     });
     breathingPhaseElement!.textContent = "";
     updateBreathingState({ currentRound: state.currentRound + 1 });

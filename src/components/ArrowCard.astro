@@ -1,5 +1,7 @@
 ---
 import type { CollectionEntry } from "astro:content";
+import AdvancedBadge from "./badges/AdvancedBadge.astro";
+import BeginnerBadge from "./badges/BeginnerBadge.astro";
 
 type Props = {
   entry: CollectionEntry<"techniques">;
@@ -22,11 +24,10 @@ const { entry, class: className } = Astro.props;
     <div class="text-sm">
       {entry.data.description}
     </div>
-    {
-      entry.data.difficulty && (
-        <div class="text-sm border px-2 py-1">{entry.data.difficulty}</div>
-      )
-    }
+    <div class="flex items-center gap-2 mt-2">
+      {entry.data.difficulty === "beginner" && <BeginnerBadge />}
+      {entry.data.difficulty === "advanced" && <AdvancedBadge />}
+    </div>
   </div>
   <svg
     xmlns="http://www.w3.org/2000/svg"

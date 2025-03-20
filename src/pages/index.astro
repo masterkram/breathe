@@ -9,6 +9,10 @@ const techniques = await getCollection("techniques");
 
 <Layout title="Prana - Breathing Exercises">
 	<main class="max-w-2xl w-full mx-auto px-4 py-8">
+		<h1 class="text-2xl font-bold mb-4">Breathing Exercises</h1>
+		<p class="text-gray-600 mb-4">
+			Choose a breathing exercise to get started. Or, configure your own.
+		</p>
 		<h2 class="text-xl font-bold mb-4">Quick Start</h2>
 		<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 			{techniques.map((e) => <ArrowCard entry={e} />)}
