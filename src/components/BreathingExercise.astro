@@ -1,0 +1,286 @@
+---
+import BreathingCircle from "./BreathingCircle.astro";
+
+const {
+  inhaleTime,
+  holdTime,
+  exhaleTime,
+  bottomHoldTime = 0,
+  rounds,
+  breathHoldAfterRound = 0,
+  roundsOfRounds = 1,
+} = Astro.props;
+---
+
+<div
+  class="flex flex-col items-center justify-center"
+  id="breathing-exercise"
+  data-inhale-time={inhaleTime}
+  data-hold-time={holdTime}
+  data-exhale-time={exhaleTime}
+  data-bottom-hold-time={bottomHoldTime}
+  data-rounds={rounds}
+  data-breath-hold-after-round={breathHoldAfterRound}
+  data-rounds-of-rounds={roundsOfRounds}
+>
+  <div class="text-2xl font-semibold mb-8">
+    {
+      roundsOfRounds && (
+        <p id="current-super-round" class="text-zinc-500 dark:text-zinc-400">
+          Round <span id="current-super-round-count">1</span> of{" "}
+          {roundsOfRounds}:
+        </p>
+      )
+    }
+    <p>Breath <span id="current-round">1</span> of {rounds}</p>
+  </div>
+  <BreathingCircle inhaleTime={inhaleTime} exhaleTime={exhaleTime} />
+  <div class="mt-8 text-xl" id="breathing-phase"></div>
+  <div id="breath-hold-timer" class="mt-4 text-2xl font-bold hidden"></div>
+  <button
+    id="start-button"
+    class="mt-8 px-6 py-2 bg-blue-500 font-medium text-white rounded-lg hover:bg-blue-600 transition-colors"
+  >
+    Start Exercise
+  </button>
+</div>
+
+<script>
+  import {
+    breathingState,
+    startExercise,
+    stopExercise,
+    updateBreathingState,
+  } from "../stores/breathingStore";
+
+  const startButton = document.getElementById("start-button");
+  const currentRoundElement = document.getElementById("current-round");
+  const currentSuperRoundElement = document.getElementById(
+    "current-super-round",
+  );
+  const currentSuperRoundCountElement = document.getElementById(
+    "current-super-round-count",
+  );
+  const breathingPhaseElement = document.getElementById("breathing-phase");
+  const breathHoldTimerElement = document.getElementById("breath-hold-timer");
+  const breathingExercise = document.getElementById("breathing-exercise");
+
+  function parseOrDefault(input: string | undefined) {
+    return input ? parseInt(input) : 0;
+  }
+
+  const inhaleTime = parseOrDefault(breathingExercise?.dataset.inhaleTime) || 1;
+  const holdTime = parseOrDefault(breathingExercise?.dataset.holdTime);
+  const exhaleTime = parseOrDefault(breathingExercise?.dataset.exhaleTime) || 1;
+  const bottomHoldTime = parseOrDefault(
+    breathingExercise?.dataset.bottomHoldTime,
+  );
+  const rounds = parseOrDefault(breathingExercise?.dataset.rounds) || 1;
+  const breathHoldAfterRound = parseOrDefault(
+    breathingExercise?.dataset.breathHoldAfterRound,
+  );
+  const roundsOfRounds =
+    parseOrDefault(breathingExercise?.dataset.roundsOfRounds) || 1;
+
+  if (
+    !startButton ||
+    !currentRoundElement ||
+    !breathingPhaseElement ||
+    !breathHoldTimerElement
+  ) {
+    throw new Error("Required elements not found");
+  }
+
+  let timeoutId: any;
+  let breathHoldIntervalId: any;
+  let breathHoldSeconds: number = 0;
+
+  function startBreathingCycle() {
+    const state = breathingState.get();
+
+    if (state.currentRound >= state.totalRounds) {
+      // Completed one round of breaths
+      if (breathHoldAfterRound > 0) {
+        // Start the breath hold after round (Wim Hof specific)
+        startBreathHoldAfterRound();
+        return;
+      } else if (state.currentSuperRound >= state.totalSuperRounds - 1) {
+        // All rounds completed
+        stopExercise();
+        startButton!.textContent = "Start Exercise";
+        return;
+      } else {
+        // Start next super round
+        updateBreathingState({
+          currentRound: 0,
+          currentSuperRound: state.currentSuperRound + 1,
+        });
+        currentRoundElement!.textContent = "1";
+        if (currentSuperRoundCountElement) {
+          currentSuperRoundCountElement.textContent = (
+            state.currentSuperRound + 2
+          ).toString();
+        }
+      }
+    }
+
+    // Inhale
+    updateBreathingState({
+      isInhaling: true,
+      isHolding: false,
+      isExhaling: false,
+    });
+    breathingPhaseElement!.textContent = "Inhale...";
+    timeoutId = setTimeout(() => {
+      if (holdTime > 0) {
+        // Hold after inhale (only if holdTime > 0)
+        updateBreathingState({
+          isInhaling: false,
+          isHolding: true,
+          isExhaling: false,
+        });
+        breathingPhaseElement!.textContent = "Hold...";
+        timeoutId = setTimeout(startExhalePhase, holdTime * 1000);
+      } else {
+        // Skip hold phase and go directly to exhale
+        startExhalePhase();
+      }
+    }, inhaleTime * 1000);
+  }
+
+  function startExhalePhase() {
+    // Exhale
+    updateBreathingState({
+      isInhaling: false,
+      isHolding: false,
+      isExhaling: true,
+    });
+    breathingPhaseElement!.textContent = "Exhale...";
+    timeoutId = setTimeout(() => {
+      if (bottomHoldTime > 0) {
+        // Bottom hold after exhale (only if bottomHoldTime > 0)
+        updateBreathingState({
+          isInhaling: false,
+          isHolding: true,
+          isExhaling: false,
+        });
+        breathingPhaseElement!.textContent = "Hold at bottom...";
+        timeoutId = setTimeout(completeBreathCycle, bottomHoldTime * 1000);
+      } else {
+        // Skip bottom hold phase and complete the breath cycle
+        completeBreathCycle();
+      }
+    }, exhaleTime * 1000);
+  }
+
+  function startBreathHoldAfterRound() {
+    // Start the breath hold after completing a round (Wim Hof specific)
+    updateBreathingState({
+      isInhaling: false,
+      isHolding: true,
+      isExhaling: false,
+      isBreathHoldAfterRound: true,
+    });
+
+    breathingPhaseElement!.textContent = "Deep breath hold...";
+    breathHoldTimerElement!.classList.remove("hidden");
+    breathHoldSeconds = 0;
+
+    // Start the countdown timer
+    breathHoldIntervalId = setInterval(() => {
+      breathHoldSeconds++;
+      const minutes = Math.floor(breathHoldSeconds / 60);
+      const seconds = breathHoldSeconds % 60;
+      breathHoldTimerElement!.textContent = `${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
+    }, 1000);
+
+    // Set timeout for the maximum hold time
+    timeoutId = setTimeout(() => {
+      completeBreathHold();
+    }, breathHoldAfterRound * 1000);
+  }
+
+  function completeBreathHold() {
+    clearInterval(breathHoldIntervalId);
+    breathHoldTimerElement!.classList.add("hidden");
+    breathHoldTimerElement!.textContent = "";
+
+    const state = breathingState.get();
+    updateBreathingState({
+      isBreathHoldAfterRound: false,
+      isHolding: false,
+      currentRound: 0,
+      currentSuperRound: state.currentSuperRound + 1,
+    });
+
+    // Check if all super rounds are completed
+    if (state.currentSuperRound >= state.totalSuperRounds - 1) {
+      stopExercise();
+      startButton!.textContent = "Start Exercise";
+      return;
+    }
+
+    // Start the next super round
+    currentRoundElement!.textContent = "1";
+    if (currentSuperRoundCountElement) {
+      currentSuperRoundCountElement.textContent = (
+        state.currentSuperRound + 2
+      ).toString();
+    }
+    breathingPhaseElement!.textContent = "";
+
+    // Start next round after a brief pause
+    timeoutId = setTimeout(() => {
+      startBreathingCycle();
+    }, 2000);
+  }
+
+  function completeBreathCycle() {
+    const state = breathingState.get();
+
+    updateBreathingState({
+      isInhaling: false,
+      isHolding: false,
+      isExhaling: false,
+    });
+    breathingPhaseElement!.textContent = "";
+    updateBreathingState({ currentRound: state.currentRound + 1 });
+    currentRoundElement!.textContent = (state.currentRound + 1).toString();
+    startBreathingCycle();
+  }
+
+  startButton.addEventListener("click", () => {
+    const state = breathingState.get();
+
+    if (state.isActive) {
+      clearTimeout(timeoutId);
+      clearInterval(breathHoldIntervalId);
+      stopExercise();
+      breathHoldTimerElement!.classList.add("hidden");
+      startButton.textContent = "Start Exercise";
+    } else {
+      startExercise({
+        inhaleTime,
+        holdTime,
+        exhaleTime,
+        bottomHoldTime,
+        rounds,
+        breathHoldAfterRound,
+        roundsOfRounds,
+      });
+      startButton.textContent = "Stop Exercise";
+      startBreathingCycle();
+    }
+  });
+
+  breathingState.subscribe((state) => {
+    if (!state.isActive) {
+      breathingPhaseElement.textContent = "";
+      currentRoundElement.textContent = "1";
+      if (currentSuperRoundCountElement) {
+        currentSuperRoundCountElement.textContent = "1";
+      }
+      breathHoldTimerElement.classList.add("hidden");
+    }
+  });
+</script>

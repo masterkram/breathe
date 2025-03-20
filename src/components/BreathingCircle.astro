@@ -1,0 +1,59 @@
+---
+import { breathingState } from "../stores/breathingStore";
+
+const { inhaleTime = 4, exhaleTime = 4 } = Astro.props;
+---
+
+<div class="flex items-center justify-center h-64">
+  <div
+    class="w-32 h-32 rounded-full bg-blue-500 opacity-80"
+    data-breathing-state={breathingState.get()}
+    data-inhale-time={inhaleTime}
+    data-exhale-time={exhaleTime}
+  >
+  </div>
+</div>
+
+<script>
+  // import { animate } from "../../node_modules/motion/react";
+  import { animate } from "https://cdn.jsdelivr.net/npm/motion@12/+esm";
+  import { breathingState } from "../stores/breathingStore";
+
+  const circle = document.querySelector("[data-breathing-state]");
+  if (!circle) throw new Error("Circle element not found");
+
+  // Get duration values from data attributes
+  const inhaleTime = parseInt(
+    circle.getAttribute("data-inhale-time") || "4",
+    10,
+  );
+  const exhaleTime = parseInt(
+    circle.getAttribute("data-exhale-time") || "4",
+    10,
+  );
+
+  const breathingAnimation = {
+    inhale: [
+      { scale: 1.5, y: -50 },
+      { duration: inhaleTime, ease: "easeOut" },
+    ],
+    hold: [{ scale: 1.5 }, { duration: 0 }],
+    exhale: [
+      { scale: 0.5, y: 50 },
+      { duration: exhaleTime, ease: "easeInOut" },
+    ],
+    bottomHold: [{ scale: 0.5 }, { duration: 0 }],
+  };
+
+  breathingState.subscribe((state) => {
+    if (state.isInhaling) {
+      animate(circle, ...breathingAnimation.inhale);
+    } else if (state.isBreathHoldAfterRound) {
+      animate(circle, ...breathingAnimation.bottomHold);
+    } else if (state.isHolding) {
+      animate(circle, ...breathingAnimation.hold);
+    } else if (state.isExhaling) {
+      animate(circle, ...breathingAnimation.exhale);
+    }
+  });
+</script>

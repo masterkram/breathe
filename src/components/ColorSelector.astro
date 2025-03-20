@@ -1,0 +1,14 @@
+---
+import { ThemeSwitch } from "astro-color-scheme";
+import { Icon } from "astro-icon/components";
+---
+
+<ThemeSwitch strategy="button" defaultTheme="system">
+  <button
+    class="flex justify-center items-center border border-zinc-200 rounded-full w-8 h-8 text-zinc-500 dark:text-zinc-400 hover:bg-zinc-200 dark:hover:bg-zinc-800 dark:border-zinc-500 transition-all"
+  >
+    <span class="sr-only">Toggle Theme</span>
+    <Icon class="hidden dark:block" name="tabler:moon" />
+    <Icon class="dark:hidden" name="tabler:sun" />
+  </button>
+</ThemeSwitch>

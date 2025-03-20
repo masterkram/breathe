@@ -1,0 +1,34 @@
+[[techniques]]
+id = "wim-hof"
+title = "Wim Hof Breathing"
+difficulty = "intermediate"
+description = "30 deep breaths followed by a breath hold"
+inhaleTime = 2.9
+holdTime = 0
+exhaleTime = 1.8
+bottomHoldTime = 0
+rounds = 1
+breathHoldAfterRound = 120
+roundsOfRounds = 3
+
+[[techniques]]
+id = "box-breathing"
+title = "Box Breathing"
+difficulty = "intermediate"
+description = "Equal duration for inhale, hold, exhale, and hold"
+inhaleTime = 2
+holdTime = 2
+exhaleTime = 2
+bottomHoldTime = 2
+rounds = 10
+
+[[techniques]]
+id = "holotropic-breathing"
+title = "Holotropic Breathing"
+difficulty = "intermediate"
+description = "Long exhales to promote relaxation"
+inhaleTime = 4
+holdTime = 3
+exhaleTime = 6
+bottomHoldTime = 2
+rounds = 10

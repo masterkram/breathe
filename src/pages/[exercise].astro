@@ -1,0 +1,43 @@
+---
+import Layout from "../layouts/Layout.astro";
+import BreathingExercise from "../components/BreathingExercise.astro";
+import { getCollection } from "astro:content";
+import BackToPrev from "../components/BackToPrev.astro";
+
+const { exercise } = Astro.params;
+const exerciseData = Astro.props.exercise;
+
+export async function getStaticPaths() {
+  const techniques = await getCollection("techniques");
+
+  return techniques.map((technique) => {
+    return {
+      params: { exercise: technique.id },
+      props: { exercise: technique.data },
+    };
+  });
+}
+
+if (!exerciseData) {
+  return Astro.redirect("/");
+}
+---
+
+<Layout title={`${exerciseData.title} - Prana`}>
+  <div>
+    <div class="max-w-2xl mx-auto px-4 py-8">
+      <BreathingExercise
+        inhaleTime={exerciseData.inhaleTime}
+        holdTime={exerciseData.holdTime}
+        exhaleTime={exerciseData.exhaleTime}
+        bottomHoldTime={exerciseData.bottomHoldTime}
+        rounds={exerciseData.rounds}
+        breathHoldAfterRound={exerciseData.breathHoldAfterRound}
+        roundsOfRounds={exerciseData.roundsOfRounds}
+        onComplete={() => {
+          alert("Exercise completed!");
+        }}
+      />
+    </div>
+  </div>
+</Layout>

@@ -1,0 +1,42 @@
+---
+import Layout from "../layouts/Layout.astro";
+import BreathingExercise from "../components/BreathingExercise.astro";
+
+// Get query parameters with defaults
+const inhaleTime = parseInt(Astro.url.searchParams.get("inhaleTime") || "4");
+const holdTime = parseInt(Astro.url.searchParams.get("holdTime") || "4");
+const exhaleTime = parseInt(Astro.url.searchParams.get("exhaleTime") || "4");
+const bottomHoldTime = parseInt(
+  Astro.url.searchParams.get("bottomHoldTime") || "0",
+);
+const rounds = parseInt(Astro.url.searchParams.get("rounds") || "3");
+---
+
+<Layout title="Breathe">
+  <div class="max-w-2xl mx-auto px-4 py-8">
+    <h1 class="text-2xl font-bold mb-6">Breathing Exercise</h1>
+
+    <div class="mb-8">
+      <div class="grid grid-cols-2 gap-4 text-sm mb-4">
+        <div><strong>Inhale:</strong> {inhaleTime} seconds</div>
+        <div><strong>Hold:</strong> {holdTime} seconds</div>
+        <div><strong>Exhale:</strong> {exhaleTime} seconds</div>
+        <div><strong>Bottom Hold:</strong> {bottomHoldTime} seconds</div>
+        <div><strong>Rounds:</strong> {rounds}</div>
+      </div>
+
+      <div class="flex space-x-4">
+        <a href="/" class="text-blue-500 hover:underline">Home</a>
+        <a href="/configure" class="text-blue-500 hover:underline">Configure</a>
+      </div>
+    </div>
+
+    <BreathingExercise
+      inhaleTime={inhaleTime}
+      holdTime={holdTime}
+      exhaleTime={exhaleTime}
+      bottomHoldTime={bottomHoldTime}
+      rounds={rounds}
+    />
+  </div>
+</Layout>
